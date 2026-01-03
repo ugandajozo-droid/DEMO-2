@@ -60,7 +60,7 @@ const DashboardPage = () => {
 
   return (
     <Layout>
-      <div className="space-y-8" data-testid="dashboard-page">
+      <div className="space-y-8 page-transition" data-testid="dashboard-page">
         {/* Header */}
         <div className="animate-fadeIn">
           <h1 className="text-3xl md:text-4xl font-bold text-slate-100 tracking-tight">
@@ -72,43 +72,43 @@ const DashboardPage = () => {
         {/* Admin Stats */}
         {user?.role === 'admin' && stats && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="stats-card pink animate-fadeIn" style={{ animationDelay: '0.1s' }}>
+            <div className="stats-card pink stagger-item hover-glow">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-white/80 text-sm font-medium">Celkom používateľov</p>
                   <p className="text-3xl font-bold mt-1">{stats.total_users}</p>
                 </div>
-                <Users className="w-10 h-10 text-white/30" />
+                <Users className="w-10 h-10 text-white/30 animate-float" />
               </div>
             </div>
 
-            <div className="stats-card blue animate-fadeIn" style={{ animationDelay: '0.2s' }}>
+            <div className="stats-card blue stagger-item hover-glow">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-white/80 text-sm font-medium">Čakajúce žiadosti</p>
                   <p className="text-3xl font-bold mt-1">{stats.pending_requests}</p>
                 </div>
-                <UserCheck className="w-10 h-10 text-white/30" />
+                <UserCheck className="w-10 h-10 text-white/30 animate-float" style={{ animationDelay: '0.5s' }} />
               </div>
             </div>
 
-            <div className="stats-card green animate-fadeIn" style={{ animationDelay: '0.3s' }}>
+            <div className="stats-card green stagger-item hover-glow">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-white/80 text-sm font-medium">AI Zdroje</p>
                   <p className="text-3xl font-bold mt-1">{stats.total_sources}</p>
                 </div>
-                <FileText className="w-10 h-10 text-white/30" />
+                <FileText className="w-10 h-10 text-white/30 animate-float" style={{ animationDelay: '1s' }} />
               </div>
             </div>
 
-            <div className="stats-card purple animate-fadeIn" style={{ animationDelay: '0.4s' }}>
+            <div className="stats-card purple stagger-item hover-glow">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-white/80 text-sm font-medium">Konverzácie</p>
                   <p className="text-3xl font-bold mt-1">{stats.total_chats}</p>
                 </div>
-                <MessageCircle className="w-10 h-10 text-white/30" />
+                <MessageCircle className="w-10 h-10 text-white/30 animate-float" style={{ animationDelay: '1.5s' }} />
               </div>
             </div>
           </div>
@@ -116,7 +116,7 @@ const DashboardPage = () => {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <Card className="dashboard-card card-hover animate-fadeIn" style={{ animationDelay: '0.2s' }}>
+          <Card className="dashboard-card card-hover stagger-item hover-glow">
             <CardHeader className="pb-3">
               <div className="w-12 h-12 rounded-xl bg-pink-500/20 flex items-center justify-center mb-3">
                 <MessageCircle className="w-6 h-6 text-pink-400" />
