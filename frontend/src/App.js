@@ -17,6 +17,8 @@ import SubjectsPage from "./pages/SubjectsPage";
 import GradesPage from "./pages/GradesPage";
 import MySubjectsPage from "./pages/MySubjectsPage";
 import MyClassesPage from "./pages/MyClassesPage";
+import FlashcardsPage from "./pages/FlashcardsPage";
+import QuizPage from "./pages/QuizPage";
 
 // Protected Route Component
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -103,6 +105,22 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <ChatPage />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/flashcards" 
+        element={
+          <ProtectedRoute>
+            <FlashcardsPage />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/quiz" 
+        element={
+          <ProtectedRoute>
+            <QuizPage />
           </ProtectedRoute>
         } 
       />
