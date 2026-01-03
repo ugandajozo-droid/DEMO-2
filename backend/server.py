@@ -986,31 +986,45 @@ Buď priateľský a používaj emotikony! 😄
                 system_message += f": {source['description']}"
             system_message += "\n"
     
-    # Call AI
-    try:
-        llm_chat = LlmChat(
-            api_key=EMERGENT_LLM_KEY,
-            session_id=chat_id,
-            system_message=system_message
-        ).with_model("openai", "gpt-5.2")
-        
-        # Build conversation for context
-        for msg in history[-10:]:
-            if msg["sender_type"] == "user":
-                await llm_chat.send_message(UserMessage(text=msg["content"]))
-        
-        # Reinitialize for clean response
-        llm_chat = LlmChat(
-            api_key=EMERGENT_LLM_KEY,
-            session_id=f"{chat_id}-{now}",
-            system_message=system_message
-        ).with_model("openai", "gpt-5.2")
-        
-        ai_response = await llm_chat.send_message(UserMessage(text=message.content))
-        
-    except Exception as e:
-        logger.error(f"AI Error: {str(e)}")
-        ai_response = "Ospravedlňujem sa, momentálne mám technické problémy. Skús to prosím znova neskôr."
+    # Call AI with retry and fallback logic
+    ai_response = None
+    models_to_try = [
+        ("openai", "gpt-4o-mini"),
+        ("openai", "gpt-4o"),
+        ("gemini", "gemini-2.0-flash"),
+    ]
+    
+    for provider, model in models_to_try:
+        try:
+            llm_chat = LlmChat(
+                api_key=EMERGENT_LLM_KEY,
+                session_id=f"{chat_id}-{now}",
+                system_message=system_message
+            ).with_model(provider, model)
+            
+            ai_response = await llm_chat.send_message(UserMessage(text=message.content))
+            
+            if ai_response and len(ai_response) > 10:
+                logger.info(f"AI response from {provider}/{model}")
+                break
+                
+        except Exception as e:
+            logger.warning(f"AI {provider}/{model} failed: {str(e)}")
+            continue
+    
+    # If all AI models failed, provide helpful fallback response
+    if not ai_response or len(ai_response) < 10:
+        logger.error("All AI models failed, using fallback response")
+        ai_response = f"""Ahoj! 😊 Momentálne mám obmedzený prístup k mojim AI schopnostiam.
+
+Tvoja otázka: "{message.content[:100]}{'...' if len(message.content) > 100 else ''}"
+
+Kým sa to vyrieši, môžeš:
+📚 Skúsiť použiť funkciu Kartičky alebo Kvíz
+🔄 Skúsiť to znova o chvíľu
+📝 Napísať otázku inak
+
+Ospravedlňujem sa za komplikácie! 🙏"""
     
     # Save AI response
     ai_msg_id = str(uuid.uuid4())
