@@ -1036,10 +1036,12 @@ Buď priateľský a používaj emotikony! 😄
     
     # Call AI with retry and fallback logic
     ai_response = None
+    # Using cheapest models first to conserve budget
     models_to_try = [
-        ("openai", "gpt-4o-mini"),
-        ("openai", "gpt-4o"),
-        ("gemini", "gemini-2.0-flash"),
+        ("gemini", "gemini-2.5-flash-lite"),
+        ("openai", "gpt-4.1-nano"),
+        ("gemini", "gemini-2.5-flash"),
+        ("openai", "gpt-4.1-mini"),
     ]
     
     for provider, model in models_to_try:
