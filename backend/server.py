@@ -715,6 +715,161 @@ async def delete_ai_source(source_id: str, user: dict = Depends(require_teacher)
     await db.ai_sources.delete_one({"id": source_id})
     return {"message": "Zdroj bol zmazaný"}
 
+# ==================== FLASHCARDS & QUIZ ====================
+
+@api_router.post("/flashcards/generate")
+async def generate_flashcards(data: FlashcardCreate, user: dict = Depends(get_current_user)):
+    """Generate flashcards from a topic using AI"""
+    
+    # Get AI sources for context
+    sources_query = {"is_active": True}
+    if data.subject_id:
+        sources_query["subject_id"] = data.subject_id
+    
+    ai_sources = await db.ai_sources.find(sources_query, {"_id": 0}).to_list(50)
+    
+    context = ""
+    if ai_sources:
+        context = "\n\nMáš prístup k týmto študijným materiálom:\n"
+        for source in ai_sources[:5]:
+            context += f"- {source['file_name']}"
+            if source.get('description'):
+                context += f": {source['description']}"
+            context += "\n"
+    
+    try:
+        llm_chat = LlmChat(
+            api_key=EMERGENT_LLM_KEY,
+            session_id=f"flashcards-{uuid.uuid4()}",
+            system_message=f"""Si PocketBuddy, AI asistent pre slovenské stredné školy. 
+Vytvor {data.count} učebných kartičiek (flashcards) na tému: {data.topic}
+
+Formát odpovede - JSON pole:
+[
+  {{"otazka": "Čo je...?", "odpoved": "Je to..."}},
+  {{"otazka": "Definuj...", "odpoved": "..."}}
+]
+
+Kartičky musia byť v slovenčine, zrozumiteľné pre stredoškolákov.
+Používaj emotikony na oživenie. 😊📚
+{context}
+"""
+        ).with_model("openai", "gpt-5.2")
+        
+        response = await llm_chat.send_message(UserMessage(text=f"Vytvor {data.count} kartičiek na tému: {data.topic}"))
+        
+        # Try to parse JSON from response
+        import json
+        try:
+            # Find JSON array in response
+            start = response.find('[')
+            end = response.rfind(']') + 1
+            if start != -1 and end > start:
+                flashcards = json.loads(response[start:end])
+            else:
+                flashcards = [{"otazka": "Chyba", "odpoved": response}]
+        except:
+            flashcards = [{"otazka": "Odpoveď", "odpoved": response}]
+        
+        return {"flashcards": flashcards, "topic": data.topic}
+        
+    except Exception as e:
+        logger.error(f"Flashcard generation error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Nepodarilo sa vytvoriť kartičky")
+
+@api_router.post("/quiz/generate")
+async def generate_quiz(data: QuizCreate, user: dict = Depends(get_current_user)):
+    """Generate a quiz from a topic using AI"""
+    
+    # Get AI sources for context
+    sources_query = {"is_active": True}
+    if data.subject_id:
+        sources_query["subject_id"] = data.subject_id
+    
+    ai_sources = await db.ai_sources.find(sources_query, {"_id": 0}).to_list(50)
+    
+    context = ""
+    if ai_sources:
+        context = "\n\nMáš prístup k týmto študijným materiálom:\n"
+        for source in ai_sources[:5]:
+            context += f"- {source['file_name']}"
+            if source.get('description'):
+                context += f": {source['description']}"
+            context += "\n"
+    
+    try:
+        llm_chat = LlmChat(
+            api_key=EMERGENT_LLM_KEY,
+            session_id=f"quiz-{uuid.uuid4()}",
+            system_message=f"""Si PocketBuddy, AI asistent pre slovenské stredné školy.
+Vytvor kvíz s {data.question_count} otázkami na tému: {data.topic}
+
+Formát odpovede - JSON pole:
+[
+  {{
+    "otazka": "Otázka...",
+    "moznosti": ["A) možnosť", "B) možnosť", "C) možnosť", "D) možnosť"],
+    "spravna": "A",
+    "vysvetlenie": "Správna odpoveď je A, pretože..."
+  }}
+]
+
+Kvíz musí byť v slovenčine, vhodný pre stredoškolákov.
+Používaj emotikony. 😊📚✨
+{context}
+"""
+        ).with_model("openai", "gpt-5.2")
+        
+        response = await llm_chat.send_message(UserMessage(text=f"Vytvor kvíz s {data.question_count} otázkami na tému: {data.topic}"))
+        
+        # Try to parse JSON from response
+        import json
+        try:
+            start = response.find('[')
+            end = response.rfind(']') + 1
+            if start != -1 and end > start:
+                questions = json.loads(response[start:end])
+            else:
+                questions = [{"otazka": "Chyba", "moznosti": [], "spravna": "", "vysvetlenie": response}]
+        except:
+            questions = [{"otazka": "Odpoveď", "moznosti": [], "spravna": "", "vysvetlenie": response}]
+        
+        return {"questions": questions, "topic": data.topic}
+        
+    except Exception as e:
+        logger.error(f"Quiz generation error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Nepodarilo sa vytvoriť kvíz")
+
+@api_router.get("/topics")
+async def get_available_topics(user: dict = Depends(get_current_user)):
+    """Get available topics from AI sources"""
+    sources_query = {"is_active": True}
+    
+    # Filter by user's grade if student
+    if user["role"] == UserRole.STUDENT and user.get("grade_id"):
+        sources_query["$or"] = [
+            {"grade_id": user["grade_id"]},
+            {"grade_id": None}
+        ]
+    
+    ai_sources = await db.ai_sources.find(sources_query, {"_id": 0}).to_list(100)
+    subjects = await db.subjects.find({}, {"_id": 0}).to_list(100)
+    
+    topics = []
+    subject_map = {s["id"]: s["name"] for s in subjects}
+    
+    for source in ai_sources:
+        topic = {
+            "id": source["id"],
+            "name": source["file_name"],
+            "description": source.get("description", ""),
+            "subject_id": source.get("subject_id"),
+            "subject_name": subject_map.get(source.get("subject_id"), "Všeobecné")
+        }
+        topics.append(topic)
+    
+    return {"topics": topics, "subjects": subjects}
+
 # ==================== CHAT ENDPOINTS ====================
 
 @api_router.get("/chats", response_model=List[ChatResponse])
