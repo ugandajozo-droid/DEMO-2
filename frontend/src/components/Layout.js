@@ -13,7 +13,9 @@ import {
   UserCheck,
   Menu,
   X,
-  FolderOpen
+  FolderOpen,
+  Layers,
+  HelpCircle
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { useState } from 'react';
@@ -33,6 +35,8 @@ const Layout = ({ children }) => {
     const baseItems = [
       { path: '/dashboard', label: 'Prehľad', icon: LayoutDashboard },
       { path: '/chat', label: 'Chat s PocketBuddy', icon: MessageCircle },
+      { path: '/flashcards', label: 'Učebné kartičky', icon: Layers },
+      { path: '/quiz', label: 'Kvíz', icon: HelpCircle },
     ];
 
     if (user?.role === 'admin') {
