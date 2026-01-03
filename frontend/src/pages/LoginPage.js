@@ -48,20 +48,20 @@ const LoginPage = () => {
             </div>
             <span className="text-3xl font-bold text-gradient">PocketBuddy</span>
           </Link>
-          <p className="text-slate-600">Tvoj osobný AI asistent pre štúdium</p>
+          <p className="text-slate-400">Tvoj osobný AI asistent pre štúdium</p>
         </div>
 
-        <Card className="border-0 shadow-xl">
+        <Card className="border-slate-700 bg-slate-800 shadow-xl">
           <CardHeader className="space-y-1 text-center">
-            <CardTitle className="text-2xl font-bold text-slate-800">Prihlásenie</CardTitle>
-            <CardDescription className="text-slate-500">
+            <CardTitle className="text-2xl font-bold text-slate-100">Prihlásenie</CardTitle>
+            <CardDescription className="text-slate-400">
               Zadajte svoje prihlasovacie údaje
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-slate-700">Email</Label>
+                <Label htmlFor="email" className="text-slate-300">Email</Label>
                 <Input
                   id="email"
                   type="email"
@@ -69,12 +69,12 @@ const LoginPage = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="rounded-xl border-slate-200 focus:border-pink-500 focus:ring-pink-500/20"
+                  className="rounded-xl border-slate-600 bg-slate-700 text-slate-100 placeholder:text-slate-500 focus:border-pink-500 focus:ring-pink-500/20"
                   data-testid="login-email-input"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-slate-700">Heslo</Label>
+                <Label htmlFor="password" className="text-slate-300">Heslo</Label>
                 <Input
                   id="password"
                   type="password"
@@ -82,7 +82,7 @@ const LoginPage = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="rounded-xl border-slate-200 focus:border-pink-500 focus:ring-pink-500/20"
+                  className="rounded-xl border-slate-600 bg-slate-700 text-slate-100 placeholder:text-slate-500 focus:border-pink-500 focus:ring-pink-500/20"
                   data-testid="login-password-input"
                 />
               </div>
@@ -103,9 +103,9 @@ const LoginPage = () => {
               </Button>
             </form>
 
-            <div className="mt-6 text-center text-sm text-slate-500">
+            <div className="mt-6 text-center text-sm text-slate-400">
               Nemáte účet?{' '}
-              <Link to="/register" className="text-pink-600 hover:text-pink-700 font-semibold" data-testid="register-link">
+              <Link to="/register" className="text-pink-400 hover:text-pink-300 font-semibold" data-testid="register-link">
                 Zaregistrujte sa
               </Link>
             </div>
@@ -113,10 +113,10 @@ const LoginPage = () => {
         </Card>
 
         {/* Demo credentials hint */}
-        <div className="mt-6 p-4 bg-white/80 rounded-xl border border-slate-200 text-center text-sm text-slate-600">
-          <p className="font-medium mb-1">Demo prístup:</p>
-          <p>Email: <code className="text-pink-600">admin@pocketbuddy.sk</code></p>
-          <p>Heslo: <code className="text-pink-600">admin123</code></p>
+        <div className="mt-6 p-4 bg-slate-800/80 rounded-xl border border-slate-700 text-center text-sm text-slate-400">
+          <p className="font-medium mb-1 text-slate-300">Demo prístup:</p>
+          <p>Email: <code className="text-pink-400">admin@pocketbuddy.sk</code></p>
+          <p>Heslo: <code className="text-pink-400">admin123</code></p>
         </div>
       </div>
     </div>
