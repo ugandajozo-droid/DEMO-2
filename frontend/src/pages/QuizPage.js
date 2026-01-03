@@ -171,12 +171,12 @@ const QuizPage = () => {
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-300">Predmet (voliteľné)</label>
-                <Select value={selectedSubject} onValueChange={setSelectedSubject}>
+                <Select value={selectedSubject || "all"} onValueChange={(v) => setSelectedSubject(v === "all" ? "" : v)}>
                   <SelectTrigger className="rounded-xl border-slate-600 bg-slate-700 text-slate-100">
                     <SelectValue placeholder="Vyberte predmet" />
                   </SelectTrigger>
                   <SelectContent className="bg-slate-800 border-slate-700 max-h-[200px]">
-                    <SelectItem value="">Všeobecné</SelectItem>
+                    <SelectItem value="all">Všeobecné</SelectItem>
                     {subjects.map((subject) => (
                       <SelectItem key={subject.id} value={subject.id}>
                         {subject.name}
