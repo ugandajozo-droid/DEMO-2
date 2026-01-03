@@ -737,11 +737,7 @@ async def generate_flashcards(data: FlashcardCreate, user: dict = Depends(get_cu
                 context += f": {source['description']}"
             context += "\n"
     
-    try:
-        llm_chat = LlmChat(
-            api_key=EMERGENT_LLM_KEY,
-            session_id=f"flashcards-{uuid.uuid4()}",
-            system_message=f"""Si PocketBuddy, AI asistent pre slovenské stredné školy. 
+    system_prompt = f"""Si PocketBuddy, AI asistent pre slovenské stredné školy. 
 Vytvor {data.count} učebných kartičiek (flashcards) na tému: {data.topic}
 
 Formát odpovede - JSON pole:
@@ -754,28 +750,54 @@ Kartičky musia byť v slovenčine, zrozumiteľné pre stredoškolákov.
 Používaj emotikony na oživenie. 😊📚
 {context}
 """
-        ).with_model("openai", "gpt-5.2")
-        
-        response = await llm_chat.send_message(UserMessage(text=f"Vytvor {data.count} kartičiek na tému: {data.topic}"))
-        
-        # Try to parse JSON from response
-        import json
+    
+    models_to_try = [
+        ("openai", "gpt-4o-mini"),
+        ("openai", "gpt-4o"),
+        ("gemini", "gemini-2.0-flash"),
+    ]
+    
+    response = None
+    for provider, model in models_to_try:
         try:
-            # Find JSON array in response
-            start = response.find('[')
-            end = response.rfind(']') + 1
-            if start != -1 and end > start:
-                flashcards = json.loads(response[start:end])
-            else:
-                flashcards = [{"otazka": "Chyba", "odpoved": response}]
-        except:
-            flashcards = [{"otazka": "Odpoveď", "odpoved": response}]
-        
+            llm_chat = LlmChat(
+                api_key=EMERGENT_LLM_KEY,
+                session_id=f"flashcards-{uuid.uuid4()}",
+                system_message=system_prompt
+            ).with_model(provider, model)
+            
+            response = await llm_chat.send_message(UserMessage(text=f"Vytvor {data.count} kartičiek na tému: {data.topic}"))
+            
+            if response and len(response) > 20:
+                logger.info(f"Flashcards generated with {provider}/{model}")
+                break
+        except Exception as e:
+            logger.warning(f"Flashcard {provider}/{model} failed: {str(e)}")
+            continue
+    
+    if not response:
+        # Fallback - create simple flashcards
+        logger.error("All AI models failed for flashcards, using fallback")
+        flashcards = [
+            {"otazka": f"Čo je {data.topic}? 🤔", "odpoved": f"Téma {data.topic} je dôležitá oblasť štúdia. Skús vyhľadať viac informácií v učebnici! 📚"},
+            {"otazka": f"Prečo je {data.topic} dôležitá? 💡", "odpoved": "Táto téma ti pomôže pochopiť základy a súvislosti v predmete."},
+            {"otazka": "Tip na učenie 📝", "odpoved": "Skús si vytvoriť vlastné poznámky a opakovať ich každý deň! 💪"}
+        ]
         return {"flashcards": flashcards, "topic": data.topic}
-        
-    except Exception as e:
-        logger.error(f"Flashcard generation error: {str(e)}")
-        raise HTTPException(status_code=500, detail="Nepodarilo sa vytvoriť kartičky")
+    
+    # Try to parse JSON from response
+    import json
+    try:
+        start = response.find('[')
+        end = response.rfind(']') + 1
+        if start != -1 and end > start:
+            flashcards = json.loads(response[start:end])
+        else:
+            flashcards = [{"otazka": "Chyba", "odpoved": response}]
+    except:
+        flashcards = [{"otazka": "Odpoveď", "odpoved": response}]
+    
+    return {"flashcards": flashcards, "topic": data.topic}
 
 @api_router.post("/quiz/generate")
 async def generate_quiz(data: QuizCreate, user: dict = Depends(get_current_user)):
