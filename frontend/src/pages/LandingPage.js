@@ -70,7 +70,7 @@ const LandingPage = () => {
           </Link>
           <div className="flex items-center gap-3">
             <Link to="/login">
-              <Button variant="ghost" className="text-slate-600 hover:text-pink-600" data-testid="login-nav-btn">
+              <Button variant="ghost" className="text-slate-300 hover:text-pink-400" data-testid="login-nav-btn">
                 Prihlásenie
               </Button>
             </Link>
@@ -87,17 +87,17 @@ const LandingPage = () => {
       <section className="pt-32 pb-20 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="text-center max-w-3xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pink-100 text-pink-700 text-sm font-medium mb-6 animate-fadeIn">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pink-500/20 text-pink-300 text-sm font-medium mb-6 animate-fadeIn">
               <Sparkles className="w-4 h-4" />
               AI asistent pre slovenské stredné školy
             </div>
             
-            <h1 className="text-4xl md:text-6xl font-bold text-slate-800 tracking-tight leading-tight mb-6 animate-fadeIn" style={{ animationDelay: '0.1s' }}>
+            <h1 className="text-4xl md:text-6xl font-bold text-slate-100 tracking-tight leading-tight mb-6 animate-fadeIn" style={{ animationDelay: '0.1s' }}>
               Tvoj osobný pomocník<br />
               <span className="text-gradient">pre štúdium</span>
             </h1>
             
-            <p className="text-lg text-slate-600 mb-8 animate-fadeIn" style={{ animationDelay: '0.2s' }}>
+            <p className="text-lg text-slate-400 mb-8 animate-fadeIn" style={{ animationDelay: '0.2s' }}>
               PocketBuddy ti pomôže pochopiť látku, vysvetlí ťažké úlohy 
               a pripraví ťa na skúšky. Všetko v slovenčine!
             </p>
@@ -113,7 +113,7 @@ const LandingPage = () => {
                 variant="outline" 
                 onClick={handleSeed}
                 disabled={seeding}
-                className="text-lg px-8 py-6"
+                className="text-lg px-8 py-6 border-slate-600 text-slate-300 hover:bg-slate-800"
                 data-testid="seed-btn"
               >
                 {seeding ? (
@@ -139,13 +139,13 @@ const LandingPage = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 px-6 bg-white/50">
+      <section className="py-20 px-6 bg-slate-800/50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-100 mb-4">
               Všetko čo potrebuješ
             </h2>
-            <p className="text-lg text-slate-600">
+            <p className="text-lg text-slate-400">
               Komplexný nástroj pre moderné vzdelávanie
             </p>
           </div>
@@ -157,11 +157,11 @@ const LandingPage = () => {
                 className="dashboard-card card-hover p-6 animate-fadeIn"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <div className="w-12 h-12 rounded-xl bg-pink-100 flex items-center justify-center mb-4">
-                  <feature.icon className="w-6 h-6 text-pink-600" />
+                <div className="w-12 h-12 rounded-xl bg-pink-500/20 flex items-center justify-center mb-4">
+                  <feature.icon className="w-6 h-6 text-pink-400" />
                 </div>
-                <h3 className="font-semibold text-slate-800 mb-2">{feature.title}</h3>
-                <p className="text-sm text-slate-600">{feature.description}</p>
+                <h3 className="font-semibold text-slate-100 mb-2">{feature.title}</h3>
+                <p className="text-sm text-slate-400">{feature.description}</p>
               </div>
             ))}
           </div>
@@ -189,13 +189,13 @@ const LandingPage = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-6 border-t border-slate-200">
+      <footer className="py-8 px-6 border-t border-slate-700">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg gradient-brand flex items-center justify-center">
               <BookOpen className="w-4 h-4 text-white" />
             </div>
-            <span className="font-semibold text-slate-800">PocketBuddy</span>
+            <span className="font-semibold text-slate-200">PocketBuddy</span>
           </div>
           <p className="text-sm text-slate-500">
             © 2024 PocketBuddy. AI asistent pre slovenské stredné školy.
