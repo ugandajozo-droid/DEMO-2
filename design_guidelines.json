@@ -1,0 +1,174 @@
+{
+  "design_system": {
+    "identity": {
+      "name": "PocketBuddy",
+      "archetype": "Soft Utility (Gen Z Friendly + Educational Trust)",
+      "core_values": ["Approachable", "Smart", "Safe", "Encouraging"],
+      "visual_mood": "Cotton Candy Tech - Soft pinks and blues grounded with crisp white and deep charcoal."
+    },
+    "typography": {
+      "font_family": {
+        "headings": "Manrope, sans-serif",
+        "body": "Figtree, sans-serif",
+        "mono": "JetBrains Mono, monospace"
+      },
+      "scale": {
+        "h1": "text-4xl md:text-6xl font-bold tracking-tight leading-tight",
+        "h2": "text-3xl md:text-4xl font-semibold tracking-tight",
+        "h3": "text-2xl font-semibold tracking-normal",
+        "body_large": "text-lg leading-relaxed",
+        "body_base": "text-base leading-relaxed text-slate-600",
+        "caption": "text-sm font-medium tracking-wide text-slate-500 uppercase"
+      },
+      "rules": [
+        "Never use Inter for headings.",
+        "Use 'tracking-tight' for all headings larger than 24px.",
+        "Headings must be Slate-900 (Dark), never pure black.",
+        "Body text should be Slate-600 or Slate-700 for optimal readability against white."
+      ]
+    },
+    "colors": {
+      "palette": {
+        "primary": {
+          "name": "Buddy Pink",
+          "hex": "#EC4899",
+          "tailwind": "pink-500",
+          "usage": "Primary Buttons, CTAs, Active States"
+        },
+        "secondary": {
+          "name": "Sky Blue",
+          "hex": "#38BDF8",
+          "tailwind": "sky-400",
+          "usage": "Accents, Gradients, Secondary Actions"
+        },
+        "background": {
+          "main": "#FFFFFF",
+          "secondary": "#F8FAFC",
+          "tertiary": "#F1F5F9"
+        },
+        "text": {
+          "primary": "#0F172A",
+          "secondary": "#475569",
+          "muted": "#94A3B8"
+        },
+        "status": {
+          "success": "#10B981",
+          "warning": "#F59E0B",
+          "error": "#EF4444"
+        }
+      },
+      "gradients": {
+        "soft_bg": "bg-gradient-to-br from-pink-50 via-white to-sky-50",
+        "brand_text": "bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-sky-500",
+        "glass_surface": "bg-white/70 backdrop-blur-xl border border-white/20 shadow-sm"
+      },
+      "css_variables": {
+        "light": {
+          "--background": "0 0% 100%",
+          "--foreground": "222.2 84% 4.9%",
+          "--card": "0 0% 100%",
+          "--card-foreground": "222.2 84% 4.9%",
+          "--popover": "0 0% 100%",
+          "--popover-foreground": "222.2 84% 4.9%",
+          "--primary": "330 81% 60%",
+          "--primary-foreground": "210 40% 98%",
+          "--secondary": "199 89% 48%",
+          "--secondary-foreground": "210 40% 98%",
+          "--muted": "210 40% 96.1%",
+          "--muted-foreground": "215.4 16.3% 46.9%",
+          "--accent": "210 40% 96.1%",
+          "--accent-foreground": "222.2 47.4% 11.2%",
+          "--destructive": "0 84.2% 60.2%",
+          "--destructive-foreground": "210 40% 98%",
+          "--border": "214.3 31.8% 91.4%",
+          "--input": "214.3 31.8% 91.4%",
+          "--ring": "330 81% 60%",
+          "--radius": "1rem"
+        }
+      }
+    },
+    "layout": {
+      "spacing": {
+        "container_padding": "p-6 md:p-12",
+        "section_gap": "gap-8 md:gap-16",
+        "element_gap": "gap-4"
+      },
+      "grids": {
+        "dashboard": "grid grid-cols-1 md:grid-cols-12 gap-6",
+        "cards": "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+      },
+      "containers": {
+        "card": "bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300",
+        "glass_panel": "bg-white/80 backdrop-blur-md border border-white/50 rounded-2xl shadow-sm"
+      }
+    },
+    "components": {
+      "buttons": {
+        "primary": "bg-pink-500 hover:bg-pink-600 text-white font-semibold rounded-full px-8 py-3 shadow-lg shadow-pink-500/20 transition-transform hover:scale-105 active:scale-95",
+        "secondary": "bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 font-medium rounded-full px-6 py-3 transition-colors",
+        "ghost": "text-slate-600 hover:text-pink-600 hover:bg-pink-50 rounded-full px-4 py-2"
+      },
+      "inputs": {
+        "default": "bg-slate-50 border-slate-200 focus:border-pink-500 focus:ring-pink-500/20 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-400"
+      },
+      "chat_bubbles": {
+        "user": "bg-pink-500 text-white rounded-2xl rounded-tr-sm px-6 py-3 max-w-[80%]",
+        "ai": "bg-white border border-slate-100 text-slate-800 rounded-2xl rounded-tl-sm px-6 py-3 max-w-[80%] shadow-sm"
+      }
+    },
+    "assets": {
+      "images": {
+        "hero_students": {
+          "url": "https://images.unsplash.com/photo-1767102060241-130cb9260718?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDJ8MHwxfHNlYXJjaHwxfHxzdHVkZW50cyUyMHN0dWR5aW5nJTIwbGFwdG9wJTIwbGlicmFyeXxlbnwwfHx8fDE3Njc0NDI3NjF8MA&ixlib=rb-4.1.0&q=85",
+          "alt": "Students studying in a modern library",
+          "usage": "Landing page hero, Student dashboard welcome"
+        },
+        "login_bg": {
+          "url": "https://images.unsplash.com/photo-1762354766812-86025ea7e2bd?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Nzh8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBzY2hvb2wlMjBidWlsZGluZyUyMGV4dGVyaW9yfGVufDB8fHx8MTc2NzQ0Mjc2Mnww&ixlib=rb-4.1.0&q=85",
+          "alt": "Modern school building exterior",
+          "usage": "Login/Register page background (with overlay)"
+        },
+        "teacher_interaction": {
+          "url": "https://images.unsplash.com/photo-1758685733926-00cba008215b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1Nzh8MHwxfHNlYXJjaHwxfHx0ZWFjaGVyJTIwaGVscGluZyUyMHN0dWRlbnQlMjBjbGFzc3Jvb218ZW58MHx8fHwxNzY3NDQyNzY0fDA&ixlib=rb-4.1.0&q=85",
+          "alt": "Teacher helping student",
+          "usage": "Teacher dashboard, About section"
+        }
+      },
+      "icons": {
+        "library": "lucide-react",
+        "preferred_set": ["BookOpen", "GraduationCap", "MessageCircle", "UploadCloud", "Users", "Settings", "LogOut", "CheckCircle", "XCircle", "FileText"]
+      }
+    },
+    "motion": {
+      "transitions": "transition-all duration-300 ease-out",
+      "hover_effects": "hover:-translate-y-1 hover:shadow-lg",
+      "page_transition": {
+        "initial": { "opacity": 0, "y": 20 },
+        "animate": { "opacity": 1, "y": 0 },
+        "exit": { "opacity": 0, "y": -20 }
+      }
+    },
+    "accessibility": {
+      "contrast_check": "Ensure all text on pink/blue backgrounds is White or Slate-900. Never use grey text on colored backgrounds.",
+      "focus_states": "focus:ring-2 focus:ring-offset-2 focus:ring-pink-500",
+      "reduced_motion": "Respect prefers-reduced-motion media query."
+    },
+    "instructions_to_main_agent": [
+      "1. UPDATE /app/frontend/src/index.css with the CSS variables provided in 'colors.css_variables.light'.",
+      "2. INSTALL 'lucide-react' and 'sonner' immediately.",
+      "3. USE the 'Manrope' and 'Figtree' fonts. Import them via Google Fonts in index.html or CSS.",
+      "4. IMPLEMENT the 'Glassmorphism' style for the Chat Interface to make it feel modern.",
+      "5. ENSURE all text is in Slovak language as per requirements.",
+      "6. DO NOT use the default Shadcn radius (0.5rem). Override it to '1rem' (rounded-2xl) for a softer look.",
+      "7. USE the provided image URLs for the respective sections. Do not use placeholders.",
+      "8. CREATE a 'Layout' component that handles the sidebar/navigation for different roles (Admin/Teacher/Student)."
+    ],
+    "universal_guidelines": [
+      "Avoid generic centered layouts. Use asymmetry.",
+      "Use 2-3x more spacing than typical designs.",
+      "Every interaction needs micro-animations.",
+      "Never use AI assistant Emoji characters.",
+      "All interactive elements MUST include data-testid attribute."
+    ]
+  }
+}
