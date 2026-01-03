@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Layout from '../components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { adminAPI, chatAPI } from '../services/api';
-import { Users, BookOpen, MessageCircle, FileText, UserCheck, GraduationCap, Loader2 } from 'lucide-react';
+import { Users, BookOpen, MessageCircle, FileText, UserCheck, GraduationCap, Loader2, Layers, HelpCircle, FolderOpen } from 'lucide-react';
 import { toast } from 'sonner';
 
 const DashboardPage = () => {
@@ -126,18 +127,62 @@ const DashboardPage = () => {
               <p className="text-slate-400 text-sm mb-4">
                 Opýtaj sa čokoľvek - pomôžem ti s úlohami, vysvetlím látku alebo ti poradím so štúdiom.
               </p>
-              <a 
-                href="/chat" 
+              <Link 
+                to="/chat" 
                 className="text-pink-400 font-medium text-sm hover:text-pink-300 transition-colors"
                 data-testid="chat-link"
               >
                 Začať konverzáciu →
-              </a>
+              </Link>
+            </CardContent>
+          </Card>
+
+          {/* Flashcards Card */}
+          <Card className="dashboard-card card-hover animate-fadeIn" style={{ animationDelay: '0.25s' }}>
+            <CardHeader className="pb-3">
+              <div className="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center mb-3">
+                <Layers className="w-6 h-6 text-purple-400" />
+              </div>
+              <CardTitle className="text-lg text-slate-100">Učebné kartičky</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-slate-400 text-sm mb-4">
+                Vytvor si kartičky na učenie z ľubovoľnej témy a efektívne sa priprav na skúšky.
+              </p>
+              <Link 
+                to="/flashcards" 
+                className="text-purple-400 font-medium text-sm hover:text-purple-300 transition-colors"
+                data-testid="flashcards-link"
+              >
+                Vytvoriť kartičky →
+              </Link>
+            </CardContent>
+          </Card>
+
+          {/* Quiz Card */}
+          <Card className="dashboard-card card-hover animate-fadeIn" style={{ animationDelay: '0.3s' }}>
+            <CardHeader className="pb-3">
+              <div className="w-12 h-12 rounded-xl bg-yellow-500/20 flex items-center justify-center mb-3">
+                <HelpCircle className="w-6 h-6 text-yellow-400" />
+              </div>
+              <CardTitle className="text-lg text-slate-100">Kvíz</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-slate-400 text-sm mb-4">
+                Otestuj svoje vedomosti pomocou AI generovaného kvízu na akúkoľvek tému.
+              </p>
+              <Link 
+                to="/quiz" 
+                className="text-yellow-400 font-medium text-sm hover:text-yellow-300 transition-colors"
+                data-testid="quiz-link"
+              >
+                Spustiť kvíz →
+              </Link>
             </CardContent>
           </Card>
 
           {user?.role === 'admin' && (
-            <Card className="dashboard-card card-hover animate-fadeIn" style={{ animationDelay: '0.3s' }}>
+            <Card className="dashboard-card card-hover animate-fadeIn" style={{ animationDelay: '0.35s' }}>
               <CardHeader className="pb-3">
                 <div className="w-12 h-12 rounded-xl bg-sky-500/20 flex items-center justify-center mb-3">
                   <UserCheck className="w-6 h-6 text-sky-400" />
@@ -150,22 +195,22 @@ const DashboardPage = () => {
                     ? `Máte ${stats.pending_requests} čakajúcich žiadostí na schválenie.`
                     : 'Žiadne čakajúce žiadosti.'}
                 </p>
-                <a 
-                  href="/approvals" 
+                <Link 
+                  to="/approvals" 
                   className="text-sky-400 font-medium text-sm hover:text-sky-300 transition-colors"
                   data-testid="approvals-link"
                 >
                   Zobraziť žiadosti →
-                </a>
+                </Link>
               </CardContent>
             </Card>
           )}
 
           {user?.role === 'teacher' && (
-            <Card className="dashboard-card card-hover animate-fadeIn" style={{ animationDelay: '0.3s' }}>
+            <Card className="dashboard-card card-hover animate-fadeIn" style={{ animationDelay: '0.4s' }}>
               <CardHeader className="pb-3">
                 <div className="w-12 h-12 rounded-xl bg-sky-500/20 flex items-center justify-center mb-3">
-                  <FileText className="w-6 h-6 text-sky-400" />
+                  <FolderOpen className="w-6 h-6 text-sky-400" />
                 </div>
                 <CardTitle className="text-lg text-slate-100">Zdroje AI</CardTitle>
               </CardHeader>
@@ -173,24 +218,24 @@ const DashboardPage = () => {
                 <p className="text-slate-400 text-sm mb-4">
                   Nahrajte študijné materiály, z ktorých bude PocketBuddy čerpať informácie.
                 </p>
-                <a 
-                  href="/ai-sources" 
+                <Link 
+                  to="/ai-sources" 
                   className="text-sky-400 font-medium text-sm hover:text-sky-300 transition-colors"
                   data-testid="ai-sources-link"
                 >
                   Spravovať zdroje →
-                </a>
+                </Link>
               </CardContent>
             </Card>
           )}
 
-          <Card className="dashboard-card card-hover animate-fadeIn" style={{ animationDelay: '0.4s' }}>
+          <Card className="dashboard-card card-hover animate-fadeIn" style={{ animationDelay: '0.45s' }}>
             <CardHeader className="pb-3">
               <div className="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center mb-3">
                 <BookOpen className="w-6 h-6 text-green-400" />
               </div>
               <CardTitle className="text-lg text-slate-100">
-                {user?.role === 'student' ? 'Moje predmety' : 'Predmety'}
+                {user?.role === 'student' ? 'Moje triedy' : user?.role === 'teacher' ? 'Moje predmety' : 'Predmety'}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -199,12 +244,12 @@ const DashboardPage = () => {
                   ? 'Pozrite si svoje predmety a triedy.' 
                   : 'Spravujte predmety a priraďte si ich.'}
               </p>
-              <a 
-                href={user?.role === 'student' ? '/my-classes' : '/subjects'} 
+              <Link 
+                to={user?.role === 'student' ? '/my-classes' : user?.role === 'teacher' ? '/my-subjects' : '/subjects'} 
                 className="text-green-400 font-medium text-sm hover:text-green-300 transition-colors"
               >
                 Zobraziť →
-              </a>
+              </Link>
             </CardContent>
           </Card>
         </div>
