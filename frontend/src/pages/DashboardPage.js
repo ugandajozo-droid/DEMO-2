@@ -1,0 +1,253 @@
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
+import Layout from '../components/Layout';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { adminAPI, chatAPI } from '../services/api';
+import { Users, BookOpen, MessageCircle, FileText, UserCheck, GraduationCap, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
+
+const DashboardPage = () => {
+  const { user } = useAuth();
+  const [stats, setStats] = useState(null);
+  const [chats, setChats] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchData();
+  }, [user]);
+
+  const fetchData = async () => {
+    try {
+      if (user?.role === 'admin') {
+        const response = await adminAPI.getStatistics();
+        setStats(response.data);
+      }
+      
+      const chatsResponse = await chatAPI.getChats();
+      setChats(chatsResponse.data.slice(0, 5));
+    } catch (error) {
+      console.error('Chyba pri načítaní dát:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Dobré ráno';
+    if (hour < 18) return 'Dobrý deň';
+    return 'Dobrý večer';
+  };
+
+  const getRoleLabel = () => {
+    switch (user?.role) {
+      case 'admin': return 'Administrátor';
+      case 'teacher': return 'Učiteľ';
+      default: return 'Študent';
+    }
+  };
+
+  if (loading) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center h-64">
+          <Loader2 className="w-8 h-8 animate-spin text-pink-500" />
+        </div>
+      </Layout>
+    );
+  }
+
+  return (
+    <Layout>
+      <div className="space-y-8" data-testid="dashboard-page">
+        {/* Header */}
+        <div className="animate-fadeIn">
+          <h1 className="text-3xl md:text-4xl font-bold text-slate-800 tracking-tight">
+            {getGreeting()}, {user?.first_name}!
+          </h1>
+          <p className="text-slate-500 mt-2">{getRoleLabel()} • PocketBuddy</p>
+        </div>
+
+        {/* Admin Stats */}
+        {user?.role === 'admin' && stats && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="stats-card pink animate-fadeIn" style={{ animationDelay: '0.1s' }}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-white/80 text-sm font-medium">Celkom používateľov</p>
+                  <p className="text-3xl font-bold mt-1">{stats.total_users}</p>
+                </div>
+                <Users className="w-10 h-10 text-white/30" />
+              </div>
+            </div>
+
+            <div className="stats-card blue animate-fadeIn" style={{ animationDelay: '0.2s' }}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-white/80 text-sm font-medium">Čakajúce žiadosti</p>
+                  <p className="text-3xl font-bold mt-1">{stats.pending_requests}</p>
+                </div>
+                <UserCheck className="w-10 h-10 text-white/30" />
+              </div>
+            </div>
+
+            <div className="stats-card green animate-fadeIn" style={{ animationDelay: '0.3s' }}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-white/80 text-sm font-medium">AI Zdroje</p>
+                  <p className="text-3xl font-bold mt-1">{stats.total_sources}</p>
+                </div>
+                <FileText className="w-10 h-10 text-white/30" />
+              </div>
+            </div>
+
+            <div className="stats-card purple animate-fadeIn" style={{ animationDelay: '0.4s' }}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-white/80 text-sm font-medium">Konverzácie</p>
+                  <p className="text-3xl font-bold mt-1">{stats.total_chats}</p>
+                </div>
+                <MessageCircle className="w-10 h-10 text-white/30" />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Quick Actions */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <Card className="dashboard-card card-hover animate-fadeIn" style={{ animationDelay: '0.2s' }}>
+            <CardHeader className="pb-3">
+              <div className="w-12 h-12 rounded-xl bg-pink-100 flex items-center justify-center mb-3">
+                <MessageCircle className="w-6 h-6 text-pink-600" />
+              </div>
+              <CardTitle className="text-lg text-slate-800">Chat s PocketBuddy</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-slate-500 text-sm mb-4">
+                Opýtaj sa čokoľvek - pomôžem ti s úlohami, vysvetlím látku alebo ti poradím so štúdiom.
+              </p>
+              <a 
+                href="/chat" 
+                className="text-pink-600 font-medium text-sm hover:text-pink-700 transition-colors"
+                data-testid="chat-link"
+              >
+                Začať konverzáciu →
+              </a>
+            </CardContent>
+          </Card>
+
+          {user?.role === 'admin' && (
+            <Card className="dashboard-card card-hover animate-fadeIn" style={{ animationDelay: '0.3s' }}>
+              <CardHeader className="pb-3">
+                <div className="w-12 h-12 rounded-xl bg-sky-100 flex items-center justify-center mb-3">
+                  <UserCheck className="w-6 h-6 text-sky-600" />
+                </div>
+                <CardTitle className="text-lg text-slate-800">Schvaľovanie registrácií</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-slate-500 text-sm mb-4">
+                  {stats?.pending_requests > 0 
+                    ? `Máte ${stats.pending_requests} čakajúcich žiadostí na schválenie.`
+                    : 'Žiadne čakajúce žiadosti.'}
+                </p>
+                <a 
+                  href="/approvals" 
+                  className="text-sky-600 font-medium text-sm hover:text-sky-700 transition-colors"
+                  data-testid="approvals-link"
+                >
+                  Zobraziť žiadosti →
+                </a>
+              </CardContent>
+            </Card>
+          )}
+
+          {user?.role === 'teacher' && (
+            <Card className="dashboard-card card-hover animate-fadeIn" style={{ animationDelay: '0.3s' }}>
+              <CardHeader className="pb-3">
+                <div className="w-12 h-12 rounded-xl bg-sky-100 flex items-center justify-center mb-3">
+                  <FileText className="w-6 h-6 text-sky-600" />
+                </div>
+                <CardTitle className="text-lg text-slate-800">Zdroje AI</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-slate-500 text-sm mb-4">
+                  Nahrajte študijné materiály, z ktorých bude PocketBuddy čerpať informácie.
+                </p>
+                <a 
+                  href="/ai-sources" 
+                  className="text-sky-600 font-medium text-sm hover:text-sky-700 transition-colors"
+                  data-testid="ai-sources-link"
+                >
+                  Spravovať zdroje →
+                </a>
+              </CardContent>
+            </Card>
+          )}
+
+          <Card className="dashboard-card card-hover animate-fadeIn" style={{ animationDelay: '0.4s' }}>
+            <CardHeader className="pb-3">
+              <div className="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center mb-3">
+                <BookOpen className="w-6 h-6 text-green-600" />
+              </div>
+              <CardTitle className="text-lg text-slate-800">
+                {user?.role === 'student' ? 'Moje predmety' : 'Predmety'}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-slate-500 text-sm mb-4">
+                {user?.role === 'student' 
+                  ? 'Pozrite si svoje predmety a triedy.' 
+                  : 'Spravujte predmety a priraďte si ich.'}
+              </p>
+              <a 
+                href={user?.role === 'student' ? '/my-classes' : '/subjects'} 
+                className="text-green-600 font-medium text-sm hover:text-green-700 transition-colors"
+              >
+                Zobraziť →
+              </a>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Recent Chats */}
+        {chats.length > 0 && (
+          <Card className="dashboard-card animate-fadeIn" style={{ animationDelay: '0.5s' }}>
+            <CardHeader>
+              <CardTitle className="text-lg text-slate-800">Posledné konverzácie</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {chats.map((chat) => (
+                  <a 
+                    key={chat.id}
+                    href={`/chat?id=${chat.id}`}
+                    className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center">
+                        <MessageCircle className="w-5 h-5 text-pink-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-slate-800">{chat.title}</p>
+                        <p className="text-xs text-slate-500">
+                          {new Date(chat.updated_at).toLocaleDateString('sk-SK', {
+                            day: 'numeric',
+                            month: 'long',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
+                        </p>
+                      </div>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+      </div>
+    </Layout>
+  );
+};
+
+export default DashboardPage;
