@@ -145,6 +145,11 @@ const ApprovalsPage = () => {
                         <p className="text-sm text-slate-500">{request.email}</p>
                         <div className="flex items-center gap-2 mt-1">
                           {getRoleBadge(request.role_requested)}
+                          {request.grade_name && (
+                            <Badge className="bg-sky-900/50 text-sky-300">
+                              {request.grade_name}
+                            </Badge>
+                          )}
                           <span className="text-xs text-slate-400">
                             {new Date(request.created_at).toLocaleDateString('sk-SK', {
                               day: 'numeric',
