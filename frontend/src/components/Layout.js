@@ -135,21 +135,21 @@ const Layout = ({ children }) => {
           {/* Navigation */}
           <nav className="flex-1 px-4 py-6 overflow-y-auto">
             <ul className="space-y-1">
-              {navItems.map((item) => (
-                <li key={item.path}>
+              {navItems.map((item, index) => (
+                <li key={item.path} className="stagger-item" style={{ animationDelay: `${index * 0.05}s` }}>
                   <Link
                     to={item.path}
                     onClick={() => setSidebarOpen(false)}
                     className={`
-                      flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200
+                      nav-item-animated flex items-center gap-3 px-4 py-3 rounded-xl
                       ${isActive(item.path) 
-                        ? 'bg-pink-500/20 text-pink-400 font-semibold' 
-                        : 'text-slate-400 hover:bg-slate-800 hover:text-pink-400'}
+                        ? 'active bg-pink-500/20 text-pink-400 font-semibold' 
+                        : 'text-slate-400 hover:text-pink-400'}
                     `}
                     data-testid={`nav-${item.path.replace('/', '')}`}
                   >
-                    <item.icon className="w-5 h-5" />
-                    {item.label}
+                    <item.icon className={`w-5 h-5 transition-transform duration-300 ${isActive(item.path) ? 'scale-110' : ''}`} />
+                    <span className="transition-all duration-300">{item.label}</span>
                   </Link>
                 </li>
               ))}
