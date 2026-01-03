@@ -752,8 +752,8 @@ Používaj emotikony na oživenie. 😊📚
 """
     
     models_to_try = [
-        ("gemini", "gemini-2.5-flash-lite"),
-        ("openai", "gpt-4.1-nano"),
+        ("openai", "gpt-4o-mini"),
+        ("openai", "gpt-4o"),
         ("gemini", "gemini-2.5-flash"),
     ]
     
@@ -838,8 +838,8 @@ Používaj emotikony. 😊📚✨
 """
     
     models_to_try = [
-        ("gemini", "gemini-2.5-flash-lite"),
-        ("openai", "gpt-4.1-nano"),
+        ("openai", "gpt-4o-mini"),
+        ("openai", "gpt-4o"),
         ("gemini", "gemini-2.5-flash"),
     ]
     
@@ -1004,8 +1004,12 @@ async def send_message(chat_id: str, message: MessageCreate, user: dict = Depend
     
     ai_sources = await db.ai_sources.find(sources_query, {"_id": 0}).to_list(100)
     
-    # Build system message with context - shorter to save tokens
-    system_message = """Si PocketBuddy, AI asistent pre slovenské stredné školy. Komunikuješ po slovensky, si priateľský a používaš emoji 😊📚. Vysvetľuješ jednoducho. Pri matematike vysvetľuj krok po kroku."""
+    # Build system message with context
+    system_message = """Si PocketBuddy, priateľský AI asistent pre slovenské stredné školy. 😊
+Komunikuješ po slovensky, si trpezlivý a povzbudzujúci 💪
+Vysvetľuješ veci jednoducho a zrozumiteľne.
+Pri matematike vysvetľuješ krok po kroku.
+Používaš emotikony 🎓📚✨"""
     
     if ai_sources:
         system_message += "\nMáš prístup k nasledujúcim študijným materiálom:\n"
