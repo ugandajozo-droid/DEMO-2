@@ -182,6 +182,13 @@ class MessageResponse(BaseModel):
     created_at: str
     attachments: Optional[List[dict]] = None
 
+# Chat File Upload Model
+class ChatAttachmentResponse(BaseModel):
+    id: str
+    file_name: str
+    file_type: str
+    file_path: str
+
 # Registration Request Models
 class RegistrationRequestResponse(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -617,21 +624,25 @@ async def upload_ai_source(
     now = datetime.now(timezone.utc).isoformat()
     
     # Save file
-    file_ext = Path(file.filename).suffix
+    file_ext = Path(file.filename).suffix if file.filename else ''
     file_path = UPLOAD_DIR / f"{source_id}{file_ext}"
     
-    async with aiofiles.open(file_path, 'wb') as f:
-        content = await file.read()
-        await f.write(content)
+    try:
+        async with aiofiles.open(file_path, 'wb') as f:
+            content = await file.read()
+            await f.write(content)
+    except Exception as e:
+        logger.error(f"File upload error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Chyba pri nahrávaní súboru")
     
     source_doc = {
         "id": source_id,
         "uploaded_by_user_id": user["id"],
-        "subject_id": subject_id if subject_id else None,
-        "grade_id": grade_id if grade_id else None,
+        "subject_id": subject_id if subject_id and subject_id != '' else None,
+        "grade_id": grade_id if grade_id and grade_id != '' else None,
         "file_name": file.filename,
         "file_path": str(file_path),
-        "description": description,
+        "description": description if description else None,
         "is_active": True,
         "created_at": now,
         "updated_at": now
@@ -763,22 +774,25 @@ async def send_message(chat_id: str, message: MessageCreate, user: dict = Depend
     ai_sources = await db.ai_sources.find(sources_query, {"_id": 0}).to_list(100)
     
     # Build system message with context
-    system_message = """Si PocketBuddy, priateľský a inteligentný AI asistent pre slovenské stredné školy. 
-    
+    system_message = """Si PocketBuddy, priateľský a inteligentný AI asistent pre slovenské stredné školy. 😊
+
 Tvoje hlavné vlastnosti:
 - Komunikuješ po slovensky
-- Si trpezlivý a povzbudzujúci
+- Si trpezlivý a povzbudzujúci 💪
 - Vysvetľuješ veci jednoducho a zrozumiteľne
 - Pri matematických úlohách vysvetľuješ krok po kroku, ako keby si učil bežného stredoškoláka
 - Nepoužívaš príliš formálny alebo akademický jazyk
 - Si tu, aby si pomohol študentom pochopiť látku, nie len dal odpovede
+- Používaš emotikony na oživenie konverzácie 🎓📚✨
+- NIKDY nepoužívaj hviezdičky (**) na formátovanie textu, píš normálne
 
 Pri riešení matematických úloh:
-1. Najprv vysvetli, čo je úlohou
+1. Najprv vysvetli, čo je úlohou 🤔
 2. Ukáž riešenie krok po kroku
 3. Pri každom kroku vysvetli PREČO sa robí daný krok
-4. Na konci zhrň riešenie
+4. Na konci zhrň riešenie ✅
 
+Buď priateľský a používaj emotikony! 😄
 """
     
     if ai_sources:
@@ -838,6 +852,40 @@ Pri riešení matematických úloh:
     }
 
 # ==================== FILE UPLOAD FOR CHAT ====================
+
+@api_router.post("/chat/attachments/upload")
+async def upload_chat_attachment(
+    file: UploadFile = File(...),
+    user: dict = Depends(get_current_user)
+):
+    attachment_id = str(uuid.uuid4())
+    now = datetime.now(timezone.utc).isoformat()
+    
+    # Save file
+    file_ext = Path(file.filename).suffix if file.filename else ''
+    file_path = UPLOAD_DIR / f"chat_{attachment_id}{file_ext}"
+    
+    try:
+        async with aiofiles.open(file_path, 'wb') as f:
+            content = await file.read()
+            await f.write(content)
+    except Exception as e:
+        logger.error(f"Chat attachment upload error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Chyba pri nahrávaní súboru")
+    
+    attachment_doc = {
+        "id": attachment_id,
+        "message_id": None,
+        "uploaded_by_user_id": user["id"],
+        "file_name": file.filename,
+        "file_path": str(file_path),
+        "file_type": file.content_type or "application/octet-stream",
+        "created_at": now
+    }
+    
+    await db.chat_attachments.insert_one(attachment_doc)
+    
+    return {"id": attachment_id, "file_name": file.filename, "file_type": file.content_type}
 
 @api_router.post("/attachments/upload")
 async def upload_attachment(
@@ -936,13 +984,32 @@ async def seed_data():
     ]
     await db.grades.insert_many(grades)
     
-    # Create subjects
+    # Create subjects - full list of Slovak high school subjects
     subjects = [
-        {"id": str(uuid.uuid4()), "name": "Matematika", "description": "Algebra, geometria, funkcie", "created_at": now, "updated_at": now},
-        {"id": str(uuid.uuid4()), "name": "Slovenský jazyk", "description": "Gramatika, literatúra", "created_at": now, "updated_at": now},
-        {"id": str(uuid.uuid4()), "name": "Informatika", "description": "Programovanie, databázy", "created_at": now, "updated_at": now},
-        {"id": str(uuid.uuid4()), "name": "Fyzika", "description": "Mechanika, termodynamika", "created_at": now, "updated_at": now},
-        {"id": str(uuid.uuid4()), "name": "Chémia", "description": "Organická a anorganická chémia", "created_at": now, "updated_at": now},
+        {"id": str(uuid.uuid4()), "name": "Matematika", "description": "Algebra, geometria, funkcie, pravdepodobnosť", "created_at": now, "updated_at": now},
+        {"id": str(uuid.uuid4()), "name": "Slovenský jazyk a literatúra", "description": "Gramatika, sloh, literatúra", "created_at": now, "updated_at": now},
+        {"id": str(uuid.uuid4()), "name": "Anglický jazyk", "description": "Angličtina pre stredné školy", "created_at": now, "updated_at": now},
+        {"id": str(uuid.uuid4()), "name": "Nemecký jazyk", "description": "Nemčina pre stredné školy", "created_at": now, "updated_at": now},
+        {"id": str(uuid.uuid4()), "name": "Francúzsky jazyk", "description": "Francúzština pre stredné školy", "created_at": now, "updated_at": now},
+        {"id": str(uuid.uuid4()), "name": "Ruský jazyk", "description": "Ruština pre stredné školy", "created_at": now, "updated_at": now},
+        {"id": str(uuid.uuid4()), "name": "Fyzika", "description": "Mechanika, termodynamika, elektrina, optika", "created_at": now, "updated_at": now},
+        {"id": str(uuid.uuid4()), "name": "Chémia", "description": "Organická a anorganická chémia, biochémia", "created_at": now, "updated_at": now},
+        {"id": str(uuid.uuid4()), "name": "Biológia", "description": "Botanika, zoológia, anatómia, genetika", "created_at": now, "updated_at": now},
+        {"id": str(uuid.uuid4()), "name": "Geografia", "description": "Fyzická a humánna geografia", "created_at": now, "updated_at": now},
+        {"id": str(uuid.uuid4()), "name": "Dejepis", "description": "Svetové a slovenské dejiny", "created_at": now, "updated_at": now},
+        {"id": str(uuid.uuid4()), "name": "Občianska náuka", "description": "Právo, politológia, sociológia", "created_at": now, "updated_at": now},
+        {"id": str(uuid.uuid4()), "name": "Informatika", "description": "Programovanie, databázy, siete", "created_at": now, "updated_at": now},
+        {"id": str(uuid.uuid4()), "name": "Ekonomika", "description": "Základy ekonómie a podnikania", "created_at": now, "updated_at": now},
+        {"id": str(uuid.uuid4()), "name": "Účtovníctvo", "description": "Finančné a manažérske účtovníctvo", "created_at": now, "updated_at": now},
+        {"id": str(uuid.uuid4()), "name": "Telesná výchova", "description": "Šport a zdravý životný štýl", "created_at": now, "updated_at": now},
+        {"id": str(uuid.uuid4()), "name": "Výtvarná výchova", "description": "Kresba, maľba, dejiny umenia", "created_at": now, "updated_at": now},
+        {"id": str(uuid.uuid4()), "name": "Hudobná výchova", "description": "Hudba, spev, dejiny hudby", "created_at": now, "updated_at": now},
+        {"id": str(uuid.uuid4()), "name": "Etická výchova", "description": "Morálka, etika, hodnoty", "created_at": now, "updated_at": now},
+        {"id": str(uuid.uuid4()), "name": "Náboženská výchova", "description": "Náboženstvo a duchovné hodnoty", "created_at": now, "updated_at": now},
+        {"id": str(uuid.uuid4()), "name": "Psychológia", "description": "Základy psychológie", "created_at": now, "updated_at": now},
+        {"id": str(uuid.uuid4()), "name": "Filozofia", "description": "Dejiny filozofie, logika", "created_at": now, "updated_at": now},
+        {"id": str(uuid.uuid4()), "name": "Technická výchova", "description": "Technické kreslenie, práca s materiálmi", "created_at": now, "updated_at": now},
+        {"id": str(uuid.uuid4()), "name": "Administratíva a korešpondencia", "description": "Písomná komunikácia, kancelárska práca", "created_at": now, "updated_at": now},
     ]
     await db.subjects.insert_many(subjects)
     
