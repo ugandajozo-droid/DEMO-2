@@ -1023,10 +1023,9 @@ Používaš emotikony 🎓📚✨"""
     ai_response = None
     # Using cheapest models first to conserve budget
     models_to_try = [
-        ("gemini", "gemini-2.5-flash-lite"),
-        ("openai", "gpt-4.1-nano"),
+        ("openai", "gpt-4o-mini"),
+        ("openai", "gpt-4o"),
         ("gemini", "gemini-2.5-flash"),
-        ("openai", "gpt-4.1-mini"),
     ]
     
     for provider, model in models_to_try:
