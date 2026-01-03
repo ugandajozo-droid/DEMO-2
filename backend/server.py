@@ -351,10 +351,23 @@ async def get_all_users(admin: dict = Depends(require_admin)):
     users = await db.users.find({}, {"_id": 0, "password_hash": 0}).to_list(1000)
     return [UserResponse(**u) for u in users]
 
-@api_router.get("/admin/registration-requests", response_model=List[RegistrationRequestResponse])
+@api_router.get("/admin/registration-requests")
 async def get_registration_requests(admin: dict = Depends(require_admin)):
     requests = await db.registration_requests.find({"status": RegistrationStatus.PENDING}, {"_id": 0}).to_list(1000)
-    return [RegistrationRequestResponse(**r) for r in requests]
+    
+    result = []
+    for req in requests:
+        grade_name = None
+        if req.get("grade_id"):
+            grade = await db.grades.find_one({"id": req["grade_id"]}, {"_id": 0})
+            grade_name = grade["name"] if grade else None
+        
+        result.append(RegistrationRequestResponse(
+            **req,
+            grade_name=grade_name
+        ))
+    
+    return result
 
 @api_router.post("/admin/approve/{request_id}")
 async def approve_registration(request_id: str, admin: dict = Depends(require_admin)):
