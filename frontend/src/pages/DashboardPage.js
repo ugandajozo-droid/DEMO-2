@@ -138,9 +138,9 @@ const DashboardPage = () => {
           </Card>
 
           {/* Flashcards Card */}
-          <Card className="dashboard-card card-hover animate-fadeIn" style={{ animationDelay: '0.25s' }}>
+          <Card className="dashboard-card card-hover stagger-item hover-glow">
             <CardHeader className="pb-3">
-              <div className="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center mb-3">
+              <div className="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                 <Layers className="w-6 h-6 text-purple-400" />
               </div>
               <CardTitle className="text-lg text-slate-100">Učebné kartičky</CardTitle>
@@ -151,16 +151,16 @@ const DashboardPage = () => {
               </p>
               <Link 
                 to="/flashcards" 
-                className="text-purple-400 font-medium text-sm hover:text-purple-300 transition-colors"
+                className="text-purple-400 font-medium text-sm hover:text-purple-300 transition-colors inline-flex items-center gap-1 group"
                 data-testid="flashcards-link"
               >
-                Vytvoriť kartičky →
+                Vytvoriť kartičky <span className="transition-transform group-hover:translate-x-1">→</span>
               </Link>
             </CardContent>
           </Card>
 
           {/* Quiz Card */}
-          <Card className="dashboard-card card-hover animate-fadeIn" style={{ animationDelay: '0.3s' }}>
+          <Card className="dashboard-card card-hover stagger-item hover-glow">
             <CardHeader className="pb-3">
               <div className="w-12 h-12 rounded-xl bg-yellow-500/20 flex items-center justify-center mb-3">
                 <HelpCircle className="w-6 h-6 text-yellow-400" />
@@ -173,16 +173,16 @@ const DashboardPage = () => {
               </p>
               <Link 
                 to="/quiz" 
-                className="text-yellow-400 font-medium text-sm hover:text-yellow-300 transition-colors"
+                className="text-yellow-400 font-medium text-sm hover:text-yellow-300 transition-colors inline-flex items-center gap-1 group"
                 data-testid="quiz-link"
               >
-                Spustiť kvíz →
+                Spustiť kvíz <span className="transition-transform group-hover:translate-x-1">→</span>
               </Link>
             </CardContent>
           </Card>
 
           {user?.role === 'admin' && (
-            <Card className="dashboard-card card-hover animate-fadeIn" style={{ animationDelay: '0.35s' }}>
+            <Card className="dashboard-card card-hover stagger-item hover-glow">
               <CardHeader className="pb-3">
                 <div className="w-12 h-12 rounded-xl bg-sky-500/20 flex items-center justify-center mb-3">
                   <UserCheck className="w-6 h-6 text-sky-400" />
@@ -197,17 +197,17 @@ const DashboardPage = () => {
                 </p>
                 <Link 
                   to="/approvals" 
-                  className="text-sky-400 font-medium text-sm hover:text-sky-300 transition-colors"
+                  className="text-sky-400 font-medium text-sm hover:text-sky-300 transition-colors inline-flex items-center gap-1 group"
                   data-testid="approvals-link"
                 >
-                  Zobraziť žiadosti →
+                  Zobraziť žiadosti <span className="transition-transform group-hover:translate-x-1">→</span>
                 </Link>
               </CardContent>
             </Card>
           )}
 
           {user?.role === 'teacher' && (
-            <Card className="dashboard-card card-hover animate-fadeIn" style={{ animationDelay: '0.4s' }}>
+            <Card className="dashboard-card card-hover stagger-item hover-glow">
               <CardHeader className="pb-3">
                 <div className="w-12 h-12 rounded-xl bg-sky-500/20 flex items-center justify-center mb-3">
                   <FolderOpen className="w-6 h-6 text-sky-400" />
@@ -220,16 +220,16 @@ const DashboardPage = () => {
                 </p>
                 <Link 
                   to="/ai-sources" 
-                  className="text-sky-400 font-medium text-sm hover:text-sky-300 transition-colors"
+                  className="text-sky-400 font-medium text-sm hover:text-sky-300 transition-colors inline-flex items-center gap-1 group"
                   data-testid="ai-sources-link"
                 >
-                  Spravovať zdroje →
+                  Spravovať zdroje <span className="transition-transform group-hover:translate-x-1">→</span>
                 </Link>
               </CardContent>
             </Card>
           )}
 
-          <Card className="dashboard-card card-hover animate-fadeIn" style={{ animationDelay: '0.45s' }}>
+          <Card className="dashboard-card card-hover stagger-item hover-glow">
             <CardHeader className="pb-3">
               <div className="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center mb-3">
                 <BookOpen className="w-6 h-6 text-green-400" />
@@ -246,9 +246,9 @@ const DashboardPage = () => {
               </p>
               <Link 
                 to={user?.role === 'student' ? '/my-classes' : user?.role === 'teacher' ? '/my-subjects' : '/subjects'} 
-                className="text-green-400 font-medium text-sm hover:text-green-300 transition-colors"
+                className="text-green-400 font-medium text-sm hover:text-green-300 transition-colors inline-flex items-center gap-1 group"
               >
-                Zobraziť →
+                Zobraziť <span className="transition-transform group-hover:translate-x-1">→</span>
               </Link>
             </CardContent>
           </Card>
@@ -256,7 +256,7 @@ const DashboardPage = () => {
 
         {/* Recent Chats */}
         {chats.length > 0 && (
-          <Card className="dashboard-card animate-fadeIn" style={{ animationDelay: '0.5s' }}>
+          <Card className="dashboard-card stagger-item">
             <CardHeader>
               <CardTitle className="text-lg text-slate-100">Posledné konverzácie</CardTitle>
             </CardHeader>
