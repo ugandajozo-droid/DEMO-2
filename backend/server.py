@@ -68,6 +68,7 @@ class UserCreate(BaseModel):
     first_name: str
     last_name: str
     role: str = "student"
+    grade_id: Optional[str] = None
 
 class UserLogin(BaseModel):
     email: EmailStr
@@ -197,8 +198,21 @@ class RegistrationRequestResponse(BaseModel):
     first_name: str
     last_name: str
     role_requested: str
+    grade_id: Optional[str] = None
+    grade_name: Optional[str] = None
     status: str
     created_at: str
+
+# Flashcard and Quiz Models
+class FlashcardCreate(BaseModel):
+    topic: str
+    subject_id: Optional[str] = None
+    count: int = 10
+
+class QuizCreate(BaseModel):
+    topic: str
+    subject_id: Optional[str] = None
+    question_count: int = 5
 
 # ==================== HELPER FUNCTIONS ====================
 
@@ -269,7 +283,7 @@ async def register(user_data: UserCreate):
         "role": user_data.role if user_data.role in [UserRole.STUDENT, UserRole.TEACHER] else UserRole.STUDENT,
         "is_approved": False,
         "is_active": False,
-        "grade_id": None,
+        "grade_id": user_data.grade_id if user_data.role == UserRole.STUDENT else None,
         "class_id": None,
         "created_at": now,
         "updated_at": now
@@ -282,6 +296,7 @@ async def register(user_data: UserCreate):
         "first_name": user_data.first_name,
         "last_name": user_data.last_name,
         "role_requested": user_data.role,
+        "grade_id": user_data.grade_id if user_data.role == UserRole.STUDENT else None,
         "status": RegistrationStatus.PENDING,
         "created_at": now,
         "updated_at": now,
