@@ -68,13 +68,13 @@ const Layout = ({ children }) => {
   return (
     <div className="min-h-screen gradient-soft">
       {/* Mobile header */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b border-slate-200 z-40 flex items-center justify-between px-4">
+      <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-slate-900 border-b border-slate-700 z-40 flex items-center justify-between px-4">
         <button 
           onClick={() => setSidebarOpen(true)}
-          className="p-2 hover:bg-slate-100 rounded-lg"
+          className="p-2 hover:bg-slate-800 rounded-lg"
           data-testid="mobile-menu-btn"
         >
-          <Menu className="w-6 h-6 text-slate-600" />
+          <Menu className="w-6 h-6 text-slate-300" />
         </button>
         <span className="text-xl font-bold text-gradient">PocketBuddy</span>
         <div className="w-10" />
@@ -90,14 +90,14 @@ const Layout = ({ children }) => {
 
       {/* Sidebar */}
       <aside className={`
-        fixed top-0 left-0 h-full w-72 bg-white border-r border-slate-200 z-50
+        fixed top-0 left-0 h-full w-72 bg-slate-900 border-r border-slate-700 z-50
         transform transition-transform duration-300 ease-out
         lg:translate-x-0
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="h-20 flex items-center justify-between px-6 border-b border-slate-100">
+          <div className="h-20 flex items-center justify-between px-6 border-b border-slate-700">
             <Link to="/dashboard" className="flex items-center gap-3" data-testid="logo-link">
               <div className="w-10 h-10 rounded-xl gradient-brand flex items-center justify-center">
                 <BookOpen className="w-5 h-5 text-white" />
@@ -106,21 +106,21 @@ const Layout = ({ children }) => {
             </Link>
             <button 
               onClick={() => setSidebarOpen(false)}
-              className="lg:hidden p-2 hover:bg-slate-100 rounded-lg"
+              className="lg:hidden p-2 hover:bg-slate-800 rounded-lg"
             >
-              <X className="w-5 h-5 text-slate-500" />
+              <X className="w-5 h-5 text-slate-400" />
             </button>
           </div>
 
           {/* User info */}
-          <div className="px-6 py-4 border-b border-slate-100">
+          <div className="px-6 py-4 border-b border-slate-700">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-400 to-sky-400 flex items-center justify-center text-white font-semibold">
                 {user?.first_name?.[0]}{user?.last_name?.[0]}
               </div>
               <div>
-                <p className="font-semibold text-slate-800">{user?.first_name} {user?.last_name}</p>
-                <p className="text-xs text-slate-500 capitalize">
+                <p className="font-semibold text-slate-100">{user?.first_name} {user?.last_name}</p>
+                <p className="text-xs text-slate-400 capitalize">
                   {user?.role === 'admin' ? 'Administrátor' : 
                    user?.role === 'teacher' ? 'Učiteľ' : 'Študent'}
                 </p>
@@ -139,8 +139,8 @@ const Layout = ({ children }) => {
                     className={`
                       flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200
                       ${isActive(item.path) 
-                        ? 'bg-pink-100 text-pink-600 font-semibold' 
-                        : 'text-slate-600 hover:bg-pink-50 hover:text-pink-600'}
+                        ? 'bg-pink-500/20 text-pink-400 font-semibold' 
+                        : 'text-slate-400 hover:bg-slate-800 hover:text-pink-400'}
                     `}
                     data-testid={`nav-${item.path.replace('/', '')}`}
                   >
@@ -153,10 +153,10 @@ const Layout = ({ children }) => {
           </nav>
 
           {/* Logout */}
-          <div className="p-4 border-t border-slate-100">
+          <div className="p-4 border-t border-slate-700">
             <Button
               variant="ghost"
-              className="w-full justify-start gap-3 text-slate-600 hover:text-red-600 hover:bg-red-50"
+              className="w-full justify-start gap-3 text-slate-400 hover:text-red-400 hover:bg-red-500/20"
               onClick={handleLogout}
               data-testid="logout-btn"
             >
