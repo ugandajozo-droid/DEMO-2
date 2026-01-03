@@ -10,7 +10,7 @@ import json
 from datetime import datetime
 
 class PocketBuddyAPITester:
-    def __init__(self, base_url="https://buddy-ucitel.preview.emergentagent.com"):
+    def __init__(self, base_url="https://learndash-slovak.preview.emergentagent.com"):
         self.base_url = base_url
         self.token = None
         self.admin_user = None

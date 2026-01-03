@@ -12,7 +12,7 @@ login_data = {
     "password": "admin123"
 }
 
-response = requests.post("https://buddy-ucitel.preview.emergentagent.com/api/auth/login", json=login_data)
+response = requests.post("https://learndash-slovak.preview.emergentagent.com/api/auth/login", json=login_data)
 token = response.json()["token"]
 
 headers = {
@@ -49,7 +49,7 @@ print(f"Adding {len(missing_subjects)} missing subjects...")
 for subject in missing_subjects:
     try:
         response = requests.post(
-            "https://buddy-ucitel.preview.emergentagent.com/api/subjects",
+            "https://learndash-slovak.preview.emergentagent.com/api/subjects",
             json=subject,
             headers=headers
         )
@@ -61,6 +61,6 @@ for subject in missing_subjects:
         print(f"❌ Error adding {subject['name']}: {str(e)}")
 
 # Check final count
-response = requests.get("https://buddy-ucitel.preview.emergentagent.com/api/subjects", headers=headers)
+response = requests.get("https://learndash-slovak.preview.emergentagent.com/api/subjects", headers=headers)
 subjects = response.json()
 print(f"\n📊 Total subjects now: {len(subjects)}")
