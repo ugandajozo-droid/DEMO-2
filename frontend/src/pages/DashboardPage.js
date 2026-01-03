@@ -62,10 +62,10 @@ const DashboardPage = () => {
       <div className="space-y-8" data-testid="dashboard-page">
         {/* Header */}
         <div className="animate-fadeIn">
-          <h1 className="text-3xl md:text-4xl font-bold text-slate-800 tracking-tight">
+          <h1 className="text-3xl md:text-4xl font-bold text-slate-100 tracking-tight">
             {getGreeting()}, {user?.first_name}!
           </h1>
-          <p className="text-slate-500 mt-2">{getRoleLabel()} • PocketBuddy</p>
+          <p className="text-slate-400 mt-2">{getRoleLabel()} • PocketBuddy</p>
         </div>
 
         {/* Admin Stats */}
@@ -117,18 +117,18 @@ const DashboardPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <Card className="dashboard-card card-hover animate-fadeIn" style={{ animationDelay: '0.2s' }}>
             <CardHeader className="pb-3">
-              <div className="w-12 h-12 rounded-xl bg-pink-100 flex items-center justify-center mb-3">
-                <MessageCircle className="w-6 h-6 text-pink-600" />
+              <div className="w-12 h-12 rounded-xl bg-pink-500/20 flex items-center justify-center mb-3">
+                <MessageCircle className="w-6 h-6 text-pink-400" />
               </div>
-              <CardTitle className="text-lg text-slate-800">Chat s PocketBuddy</CardTitle>
+              <CardTitle className="text-lg text-slate-100">Chat s PocketBuddy</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-slate-500 text-sm mb-4">
+              <p className="text-slate-400 text-sm mb-4">
                 Opýtaj sa čokoľvek - pomôžem ti s úlohami, vysvetlím látku alebo ti poradím so štúdiom.
               </p>
               <a 
                 href="/chat" 
-                className="text-pink-600 font-medium text-sm hover:text-pink-700 transition-colors"
+                className="text-pink-400 font-medium text-sm hover:text-pink-300 transition-colors"
                 data-testid="chat-link"
               >
                 Začať konverzáciu →
@@ -139,20 +139,20 @@ const DashboardPage = () => {
           {user?.role === 'admin' && (
             <Card className="dashboard-card card-hover animate-fadeIn" style={{ animationDelay: '0.3s' }}>
               <CardHeader className="pb-3">
-                <div className="w-12 h-12 rounded-xl bg-sky-100 flex items-center justify-center mb-3">
-                  <UserCheck className="w-6 h-6 text-sky-600" />
+                <div className="w-12 h-12 rounded-xl bg-sky-500/20 flex items-center justify-center mb-3">
+                  <UserCheck className="w-6 h-6 text-sky-400" />
                 </div>
-                <CardTitle className="text-lg text-slate-800">Schvaľovanie registrácií</CardTitle>
+                <CardTitle className="text-lg text-slate-100">Schvaľovanie registrácií</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-slate-500 text-sm mb-4">
+                <p className="text-slate-400 text-sm mb-4">
                   {stats?.pending_requests > 0 
                     ? `Máte ${stats.pending_requests} čakajúcich žiadostí na schválenie.`
                     : 'Žiadne čakajúce žiadosti.'}
                 </p>
                 <a 
                   href="/approvals" 
-                  className="text-sky-600 font-medium text-sm hover:text-sky-700 transition-colors"
+                  className="text-sky-400 font-medium text-sm hover:text-sky-300 transition-colors"
                   data-testid="approvals-link"
                 >
                   Zobraziť žiadosti →
@@ -164,18 +164,18 @@ const DashboardPage = () => {
           {user?.role === 'teacher' && (
             <Card className="dashboard-card card-hover animate-fadeIn" style={{ animationDelay: '0.3s' }}>
               <CardHeader className="pb-3">
-                <div className="w-12 h-12 rounded-xl bg-sky-100 flex items-center justify-center mb-3">
-                  <FileText className="w-6 h-6 text-sky-600" />
+                <div className="w-12 h-12 rounded-xl bg-sky-500/20 flex items-center justify-center mb-3">
+                  <FileText className="w-6 h-6 text-sky-400" />
                 </div>
-                <CardTitle className="text-lg text-slate-800">Zdroje AI</CardTitle>
+                <CardTitle className="text-lg text-slate-100">Zdroje AI</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-slate-500 text-sm mb-4">
+                <p className="text-slate-400 text-sm mb-4">
                   Nahrajte študijné materiály, z ktorých bude PocketBuddy čerpať informácie.
                 </p>
                 <a 
                   href="/ai-sources" 
-                  className="text-sky-600 font-medium text-sm hover:text-sky-700 transition-colors"
+                  className="text-sky-400 font-medium text-sm hover:text-sky-300 transition-colors"
                   data-testid="ai-sources-link"
                 >
                   Spravovať zdroje →
@@ -186,22 +186,22 @@ const DashboardPage = () => {
 
           <Card className="dashboard-card card-hover animate-fadeIn" style={{ animationDelay: '0.4s' }}>
             <CardHeader className="pb-3">
-              <div className="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center mb-3">
-                <BookOpen className="w-6 h-6 text-green-600" />
+              <div className="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center mb-3">
+                <BookOpen className="w-6 h-6 text-green-400" />
               </div>
-              <CardTitle className="text-lg text-slate-800">
+              <CardTitle className="text-lg text-slate-100">
                 {user?.role === 'student' ? 'Moje predmety' : 'Predmety'}
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-slate-500 text-sm mb-4">
+              <p className="text-slate-400 text-sm mb-4">
                 {user?.role === 'student' 
                   ? 'Pozrite si svoje predmety a triedy.' 
                   : 'Spravujte predmety a priraďte si ich.'}
               </p>
               <a 
                 href={user?.role === 'student' ? '/my-classes' : '/subjects'} 
-                className="text-green-600 font-medium text-sm hover:text-green-700 transition-colors"
+                className="text-green-400 font-medium text-sm hover:text-green-300 transition-colors"
               >
                 Zobraziť →
               </a>
@@ -213,7 +213,7 @@ const DashboardPage = () => {
         {chats.length > 0 && (
           <Card className="dashboard-card animate-fadeIn" style={{ animationDelay: '0.5s' }}>
             <CardHeader>
-              <CardTitle className="text-lg text-slate-800">Posledné konverzácie</CardTitle>
+              <CardTitle className="text-lg text-slate-100">Posledné konverzácie</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
@@ -221,14 +221,14 @@ const DashboardPage = () => {
                   <a 
                     key={chat.id}
                     href={`/chat?id=${chat.id}`}
-                    className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 transition-colors"
+                    className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-700/50 transition-colors"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center">
-                        <MessageCircle className="w-5 h-5 text-pink-600" />
+                      <div className="w-10 h-10 rounded-full bg-pink-500/20 flex items-center justify-center">
+                        <MessageCircle className="w-5 h-5 text-pink-400" />
                       </div>
                       <div>
-                        <p className="font-medium text-slate-800">{chat.title}</p>
+                        <p className="font-medium text-slate-200">{chat.title}</p>
                         <p className="text-xs text-slate-500">
                           {new Date(chat.updated_at).toLocaleDateString('sk-SK', {
                             day: 'numeric',
