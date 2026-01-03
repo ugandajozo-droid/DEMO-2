@@ -752,9 +752,9 @@ Používaj emotikony na oživenie. 😊📚
 """
     
     models_to_try = [
-        ("openai", "gpt-4o-mini"),
-        ("openai", "gpt-4o"),
-        ("gemini", "gemini-2.0-flash"),
+        ("gemini", "gemini-2.5-flash-lite"),
+        ("openai", "gpt-4.1-nano"),
+        ("gemini", "gemini-2.5-flash"),
     ]
     
     response = None
@@ -838,9 +838,9 @@ Používaj emotikony. 😊📚✨
 """
     
     models_to_try = [
-        ("openai", "gpt-4o-mini"),
-        ("openai", "gpt-4o"),
-        ("gemini", "gemini-2.0-flash"),
+        ("gemini", "gemini-2.5-flash-lite"),
+        ("openai", "gpt-4.1-nano"),
+        ("gemini", "gemini-2.5-flash"),
     ]
     
     response = None
